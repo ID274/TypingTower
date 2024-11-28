@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class WordBall : WordObject
 {
+    [SerializeField] private Color objectColor;
     protected override void Awake()
     {
         base.Awake();
-        materialColor = Color.green;
-        SetColor(materialColor);
+        materialColor = objectColor;
+        SetMaterialColor(materialColor);
     }
 }

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5d3e72f1896164d9d9e90a7fb10417, type: 3}
+  m_Name: Brainrot
+  m_EditorClassIdentifier: 
+  listName: Brainrot
+  words:
+  - {fileID: 11400000, guid: 8840f253783c0c041bc2620811295326, type: 2}
+  - {fileID: 11400000, guid: 9a29c7adb4ebbea4a83bb51b070310b8, type: 2}
+  - {fileID: 11400000, guid: 8cc4bc6a6b1e21d47bacf27ac86a5b86, type: 2}
+  - {fileID: 11400000, guid: 12d518af963526a49b562c76418a43f3, type: 2}
+  - {fileID: 11400000, guid: f4020107347055244a9e9b2de95095e2, type: 2}
+  - {fileID: 11400000, guid: a32675f865a089546b71f2147deb7d51, type: 2}
+  - {fileID: 11400000, guid: 348c0c64a68720644b20f733da773480, type: 2}
+  - {fileID: 11400000, guid: 5cb61fbef7925dc4fbea9e33746e8e60, type: 2}
+  - {fileID: 11400000, guid: e9062d1c51f53fd46bb575eb013e9a02, type: 2}
+  - {fileID: 11400000, guid: fb73fac647b29f347b7b66cf840f5117, type: 2}
+  - {fileID: 11400000, guid: 7aec3a32e1cd4c348900c6fdd3812276, type: 2}
+  estimatedDifficulty: 2

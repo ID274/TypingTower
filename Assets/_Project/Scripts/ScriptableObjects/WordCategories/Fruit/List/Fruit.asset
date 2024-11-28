@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5d3e72f1896164d9d9e90a7fb10417, type: 3}
+  m_Name: Fruit
+  m_EditorClassIdentifier: 
+  listName: Fruit
+  words:
+  - {fileID: 11400000, guid: 5fc26dd0a3cbab141bdd785e83a90018, type: 2}
+  - {fileID: 11400000, guid: b1bc691f75a67f545815656a2371e045, type: 2}
+  - {fileID: 11400000, guid: 0204d1c2d96e81343a7ff51e06f16421, type: 2}
+  - {fileID: 11400000, guid: 7d2f29558bdb62b4ab75f51c762b8ad7, type: 2}
+  - {fileID: 11400000, guid: c937563e117fa4c4c8cfdbb8e1da725f, type: 2}
+  - {fileID: 11400000, guid: dc8d2aba3accdf247a49ad20f4c2f15b, type: 2}
+  - {fileID: 11400000, guid: b6db703df2e98d844977a51a7d46646a, type: 2}
+  - {fileID: 11400000, guid: 11bc8a3d8be70ad43964869bb3d6ceed, type: 2}
+  - {fileID: 11400000, guid: b43cace8babaf3e4090e431c65dab65b, type: 2}
+  - {fileID: 11400000, guid: 4a7cf791d5d86fb4fb97b62aa550f3f2, type: 2}
+  - {fileID: 11400000, guid: 6b31ebb31d9fe7541a796ea350a71a41, type: 2}
+  estimatedDifficulty: 0

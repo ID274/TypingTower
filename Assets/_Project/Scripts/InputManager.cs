@@ -48,5 +48,10 @@ public class InputManager : Singleton<InputManager>
         inputField.text = "";
         KeyboardManager.Instance.ClearInput();
     }
+
+    public void DisableKeyboard()
+    {
+        KeyboardManager.Instance.DisableKeyboard();
+    }
 }
 

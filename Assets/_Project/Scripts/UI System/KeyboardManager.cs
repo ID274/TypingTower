@@ -7,6 +7,7 @@ public class KeyboardManager : Singleton<KeyboardManager>
 {
     [Header("Attributes")]
     public int maxInputLength = 18;
+    public bool keyboardActive = false;
 
     [Header("References")]
     public GameObject keyboard;
@@ -31,10 +32,11 @@ public class KeyboardManager : Singleton<KeyboardManager>
             }
         }
         keyboard.SetActive(true);
-    }
+        keyboardActive = true;
+}
     public void OnBackspacePressed()
     {
-        if (keyboard != null)
+        if (keyboard != null && keyboardActive == true)
         {
             if (currentInput.Length > 0)
             {
@@ -47,7 +49,7 @@ public class KeyboardManager : Singleton<KeyboardManager>
 
     public void TakeInput(char key)
     {
-        if (keyboard != null)
+        if (keyboard != null && keyboardActive == true)
         {
             if (currentInput.Length < maxInputLength)
             {
@@ -56,6 +58,12 @@ public class KeyboardManager : Singleton<KeyboardManager>
                 InputManager.Instance.OnValueChanged();
             }
         }
+    }
+
+    public void DisableKeyboard()
+    {
+        keyboardActive = false;
+        keyboard.SetActive(false);
     }
 
     public void ClearInput()

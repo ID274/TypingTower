@@ -8,35 +8,20 @@ public class InputManager : Singleton<InputManager>
 
     private void Start()
     {
-        if (Application.isMobilePlatform)
+        if (GameManager.Instance.useOnScreenKeyboard)
         {
-            // Add listeners for focus and deselection handling
-            inputField.onSelect.AddListener(OpenNativeKeyboard);
-            inputField.onDeselect.AddListener(HideNativeKeyboard);
-        }
-        else if (Application.platform == RuntimePlatform.WebGLPlayer)
-        {
-            Debug.Log("Running on WebGL. Keyboard is managed by the browser.");
+            inputField.DeactivateInputField();
+            KeyboardManager.Instance.InitializeKeyboard();
         }
         else
         {
-            Debug.Log("Running on a non-mobile, non-WebGL platform. No special keyboard behavior.");
+            inputField.ActivateInputField();
         }
-    }
-
-    private void OpenNativeKeyboard(string text)
-    {
-        TouchScreenKeyboard.Open(inputField.text, TouchScreenKeyboardType.Default);
-    }
-
-    private void HideNativeKeyboard(string text)
-    {
-        inputField.DeactivateInputField();
-        Debug.Log("Keyboard hidden as field is deselected.");
     }
 
     public void OnValueChanged()
     {
+        inputField.text = inputField.text.ToUpper();
         Debug.Log($"OnValueChanged: {inputField.text}");
         bool wordFound = WordSearchManager.Instance.CheckWord(inputField.text);
         if (wordFound)
@@ -50,26 +35,18 @@ public class InputManager : Singleton<InputManager>
     public void OnFieldSelected()
     {
         Debug.Log("Field selected.");
-        if (Application.isMobilePlatform)
-        {
-            // Ensure the keyboard is open when the field is selected
-            TouchScreenKeyboard.Open(inputField.text, TouchScreenKeyboardType.Default);
-        }
     }
 
     public void OnFieldDeselected()
     {
         Debug.Log("Field deselected.");
-        if (Application.isMobilePlatform)
-        {
-            // Hide the keyboard when the field is deselected
-            inputField.DeactivateInputField(); // Ensure the field loses focus
-        }
+        inputField.DeactivateInputField();
     }
 
     public void ClearField()
     {
         inputField.text = "";
+        KeyboardManager.Instance.ClearInput();
     }
 }
 

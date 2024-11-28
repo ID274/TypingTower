@@ -18,6 +18,7 @@ public class Trie
 
     public void Insert(string word)
     {
+        word = word.ToUpper();
         var currentNode = root;
         foreach (var letter in word)
         {
@@ -33,6 +34,7 @@ public class Trie
 
     public bool Search(string word)
     {
+        word = word.ToUpper();
         var currentNode = root;
         foreach (var letter in word)
         {
@@ -47,6 +49,7 @@ public class Trie
 
     public void Remove(string word)
     {
+        word = word.ToUpper();
         if (string.IsNullOrEmpty(word))
         {
             return;
@@ -56,6 +59,7 @@ public class Trie
 
     private bool RemoveHelper(TrieNode currentNode, string word, int index)
     {
+        word = word.ToUpper();
         if (index == word.Length)
         {
             if (!currentNode.IsEndOfWord)

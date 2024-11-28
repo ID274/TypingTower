@@ -17,14 +17,14 @@ public class WordSearchManager : Singleton<WordSearchManager>
     public void AddWord(Word word)
     {
         wordsToType.Add(word);
-        stringsToType.Add(word.word);
+        stringsToType.Add(word.word.ToUpper());
         wordTrie.Insert(word.word);
     }
 
     public void RemoveWord(Word word)
     {
         wordsToType.Remove(word);
-        stringsToType.Remove(word.word);
+        stringsToType.Remove(word.word.ToUpper());
         wordTrie.Remove(word.word);
     }
 

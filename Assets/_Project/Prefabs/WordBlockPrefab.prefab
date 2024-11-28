@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectColor: {r: 0.44992724, g: 0.47798735, b: 0.001503004, a: 1}
-  randomColor: 1
+  randomColor: 0
 --- !u!1 &582678557341256521
 GameObject:
   m_ObjectHideFlags: 0

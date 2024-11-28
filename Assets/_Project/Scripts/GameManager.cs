@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>   
 {
+    [Header("Application Attributes")]
+    public bool useOnScreenKeyboard = true;
+
     [Header("Level Details")]
     public WordDifficulty levelDifficulty;
 

@@ -65,7 +65,6 @@ public class GameManager : Singleton<GameManager>
                 break;
             case GameState.Paused:
                 // paused behaviour
-                Time.timeScale = 0;
                 break;
             case GameState.Playing:
                 Time.timeScale = IncrementGameSpeed();
@@ -98,6 +97,7 @@ public class GameManager : Singleton<GameManager>
     public void PauseGame()
     {
         gameState = GameState.Paused;
+        Time.timeScale = 0;
         InputManager.Instance.inputField.enabled = false;
     }
 
@@ -111,6 +111,7 @@ public class GameManager : Singleton<GameManager>
     public void RestartGame()
     {
         gameState = GameState.PreStart;
+        Time.timeScale = 1;
         InputManager.Instance.inputField.enabled = true;
     }
 

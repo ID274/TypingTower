@@ -54,7 +54,7 @@ MeshRenderer:
   m_GameObject: {fileID: 415793110537537743}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 0
+  m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 83062b8199362f04d876b88438082fe6, type: 2}
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -147,6 +147,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d4f6b3a082fce943b5eaa34e5421f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectColor: {r: 0.44992724, g: 0.47798735, b: 0.001503004, a: 1}
+  randomColor: 1
 --- !u!1 &582678557341256521
 GameObject:
   m_ObjectHideFlags: 0

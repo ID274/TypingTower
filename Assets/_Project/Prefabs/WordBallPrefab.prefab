@@ -183,8 +183,8 @@ GameObject:
   - component: {fileID: 682453410350913780}
   - component: {fileID: 7477133682764905135}
   - component: {fileID: 5045406639242505559}
-  - component: {fileID: -5509972294892112762}
   - component: {fileID: -1428290560400928896}
+  - component: {fileID: -5509972294892112762}
   m_Layer: 0
   m_Name: WordBallPrefab
   m_TagString: Word Object
@@ -279,18 +279,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-5509972294892112762
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5409755015552216157}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6d1c655b1a131b4896f1ac21c6ae726, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &-1428290560400928896
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -318,3 +306,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-5509972294892112762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5409755015552216157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d1c655b1a131b4896f1ac21c6ae726, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectColor: {r: 0.51572317, g: 0.1929907, b: 0.48505518, a: 1}

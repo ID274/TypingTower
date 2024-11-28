@@ -9,7 +9,7 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
     {
         AssignTextReference();
         SetWord();
-        SetColor(materialColor);
+        SetMaterialColor(materialColor);
     }
     public void AssignTextReference()
     {
@@ -30,8 +30,10 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         wordText.text = WordManager.Instance.PickRandomWordWeighted().word;
     }
 
-    protected void SetColor(Color color)
+    protected void SetMaterialColor(Color color)
     {
-        GetComponent<MeshRenderer>().material.color = color;
+        MeshRenderer meshRend = GetComponent<MeshRenderer>();
+        Material mat = meshRend.material;
+        mat.color = color;
     }
 }

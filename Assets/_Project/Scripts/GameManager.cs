@@ -111,7 +111,7 @@ public class GameManager : Singleton<GameManager>
     public void ResumeGame()
     {
         gameState = GameState.Playing;
-        Time.timeScale = GameManager.Instance.gameSpeed;
+        Time.timeScale = gameSpeed;
         InputManager.Instance.inputField.enabled = true;
     }
 

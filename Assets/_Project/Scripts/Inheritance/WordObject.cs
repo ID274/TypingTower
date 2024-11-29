@@ -5,11 +5,13 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
 {
     private TextMeshPro wordText;
     protected Color materialColor = Color.white;
+    private Rigidbody rb;
     protected virtual void Awake()
     {
         AssignTextReference();
         SetWord();
         SetMaterialColor(materialColor);
+        rb = GetComponent<Rigidbody>();
     }
     public void AssignTextReference()
     {
@@ -35,5 +37,13 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         MeshRenderer meshRend = GetComponent<MeshRenderer>();
         Material mat = meshRend.material;
         mat.color = color;
+    }
+
+    private void FixedUpdate()
+    {
+        if (rb.velocity.y > 0)
+        {
+            rb.velocity = new Vector3 (rb.velocity.x, 0.1f, rb.velocity.z);
+        }
     }
 }

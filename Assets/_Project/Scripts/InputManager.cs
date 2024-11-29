@@ -6,7 +6,7 @@ public class InputManager : Singleton<InputManager>
 {
     public TMP_InputField inputField;
 
-    private void Start()
+    void Start()
     {
         inputField.enabled = true;
         if (GameManager.Instance.useOnScreenKeyboard)
@@ -17,6 +17,14 @@ public class InputManager : Singleton<InputManager>
         else
         {
             inputField.ActivateInputField();
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            KeyboardManager.Instance.OnBackspacePressed();
         }
     }
 

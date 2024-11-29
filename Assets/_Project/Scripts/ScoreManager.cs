@@ -1,40 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using PatternLibrary;
+using System.Collections;
 using TMPro;
-using JetBrains.Annotations;
-using System.Runtime.CompilerServices;
-using Palmmedia.ReportGenerator.Core.Reporting.Builders;
-using System;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreManager : Singleton<ScoreManager>
 {
     [Header("Score Attributes")]
+    [SerializeField] private int wordsTotalCounter = 0;
     private int easyWordsCounter = 0;
     private int mediumWordsCounter = 0;
     private int hardWordsCounter = 0;
-    private int mistakesCounter = 0;
+    [SerializeField] private int mistakesCounter = 0;
 
     [Header("Score Settings")]
     public int totalScore = 0;
-    private int easyWordsScore = 100;
-    private int mediumWordsScore = 200;
-    private int hardWordsScore = 300;
+    [SerializeField] private int easyWordsScore = 100;
+    [SerializeField] private int mediumWordsScore = 200;
+    [SerializeField] private int hardWordsScore = 300;
+    [SerializeField] private int mistakePenalty = 50;
 
     [Header("Grade Settings")]
-    public char[] availableGrades = { 'S', 'A', 'B', 'C', 'D', 'F' };
     public char gradeAwarded = 'F';
-    int scoreRequiredForS = 5000;
-    int mistakesAllowedForS = 0;
-    int scoreRequiredForA = 4000;
-    int mistakesAllowedForA = 5;
-    int scoreRequiredForB = 3000;
-    int mistakesAllowedForB = 10;
-    int scoreRequiredForC = 2000;
-    int mistakesAllowedForC = 15;
-    int scoreRequiredForD = 1000;
-    int mistakesAllowedForD = 20;
+    (char, int, int) gradeS = ('S', 5000, 0); // GRADE | SCORE REQUIRED | MISTAKES ALLOWED
+    (char, int, int) gradeA = ('A', 4000, 5);
+    (char, int, int) gradeB = ('B', 3000, 10);
+    (char, int, int) gradeC = ('C', 2000, 15);
+    (char, int, int) gradeD = ('D', 1000, 20);
+    char gradeF = 'F';
 
     [Header("Show Text Animation")]
     [SerializeField] private float realTimeBetweenLetters = 0.2f;
@@ -42,15 +35,36 @@ public class ScoreManager : Singleton<ScoreManager>
     [Header("References")]
     [SerializeField] private GameObject scorePanel;
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI scoreTextHeader;
     [SerializeField] private TextMeshProUGUI easyWordsText;
+    [SerializeField] private TextMeshProUGUI easyWordsHeader;
     [SerializeField] private TextMeshProUGUI mediumWordsText;
+    [SerializeField] private TextMeshProUGUI mediumWordsHeader;
     [SerializeField] private TextMeshProUGUI hardWordsText;
+    [SerializeField] private TextMeshProUGUI hardWordsHeader;
     [SerializeField] private TextMeshProUGUI mistakesText;
+    [SerializeField] private TextMeshProUGUI mistakesTextHeader;
+    [SerializeField] private Sprite gradeSSprite, gradeASprite, gradeBSprite, gradeCSprite, gradeDSprite, gradeFSprite;
+    [SerializeField] private GameObject gradeSpriteImage;
 
     protected override void Awake()
     {
         base.Awake();
+        gradeSpriteImage.SetActive(false);
         scorePanel.SetActive(false);
+
+        //ensure text is disabled so we can reenable it later
+        scoreText.enabled = false;
+        scoreTextHeader.enabled = false;
+        easyWordsText.enabled = false;
+        easyWordsHeader.enabled = false;
+        mediumWordsText.enabled = false;
+        mediumWordsHeader.enabled = false;
+        hardWordsText.enabled = false;
+        hardWordsHeader.enabled = false;
+        mistakesText.enabled = false;
+        mistakesTextHeader.enabled = false;
+
     }
 
 
@@ -71,6 +85,7 @@ public class ScoreManager : Singleton<ScoreManager>
                 Debug.LogWarning("Invalid word difficulty: " + difficulty);
                 break;
         }
+        wordsTotalCounter++;
     }
 
     public void AddEasyWord()
@@ -103,7 +118,9 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void UpdateScore()
     {
-        totalScore = (easyWordsCounter * easyWordsScore) + (mediumWordsCounter * mediumWordsScore) + (hardWordsCounter * hardWordsScore);
+        totalScore = (easyWordsCounter * easyWordsScore) + (mediumWordsCounter * mediumWordsScore) + (hardWordsCounter * hardWordsScore) - (mistakesCounter * mistakePenalty);
+        scoreText.text = totalScore.ToString();
+        Debug.Log("Updated score");
     }
 
     public char CalculateGrade(WordDifficulty difficulty, int totalScore)
@@ -113,79 +130,79 @@ public class ScoreManager : Singleton<ScoreManager>
             case WordDifficulty.Easy:
                 break;
             case WordDifficulty.Medium:
-                scoreRequiredForS = scoreRequiredForS * 2;
-                scoreRequiredForA = scoreRequiredForA * 2;
-                scoreRequiredForB = scoreRequiredForB * 2;
-                scoreRequiredForC = scoreRequiredForC * 2;
-                scoreRequiredForD = scoreRequiredForD * 2;
+                gradeS.Item2 *= 2;
+                gradeA.Item2 *= 2;
+                gradeB.Item2 *= 2;
+                gradeC.Item2 *= 2;
+                gradeD.Item2 *= 2;
                 break;
             case WordDifficulty.Hard:
-                scoreRequiredForS = scoreRequiredForS * 3;
-                scoreRequiredForA = scoreRequiredForA * 3;
-                scoreRequiredForB = scoreRequiredForB * 3;
-                scoreRequiredForC = scoreRequiredForC * 3;
-                scoreRequiredForD = scoreRequiredForD * 3;
+                gradeS.Item2 *= 3;
+                gradeA.Item2 *= 3;
+                gradeB.Item2 *= 3;
+                gradeC.Item2 *= 3;
+                gradeD.Item2 *= 3;
                 break;
         }
 
-        if (totalScore >= scoreRequiredForS)
+        if (totalScore >= gradeS.Item2)
         {
-            if (mistakesCounter <= mistakesAllowedForS)
+            if (mistakesCounter == gradeS.Item3)
             {
-                gradeAwarded = availableGrades[0];
+                gradeAwarded = gradeS.Item1;
             }
             else
             {
-                gradeAwarded = availableGrades[1];
+                gradeAwarded = gradeA.Item1;
             }
         }
-        else if (totalScore >= scoreRequiredForA)
+        else if (totalScore >= gradeA.Item2)
         {
-            if (mistakesCounter <= mistakesAllowedForA)
+            if (mistakesCounter <= (wordsTotalCounter * gradeA.Item3) / 100)
             {
-                gradeAwarded = availableGrades[1];
+                gradeAwarded = gradeA.Item1;
             }
             else
             {
-                gradeAwarded = availableGrades[2];
+                gradeAwarded = gradeB.Item1;
             }
         }
-        else if (totalScore >= scoreRequiredForB)
+        else if (totalScore >= gradeB.Item2)
         {
-            if (mistakesCounter <= mistakesAllowedForB)
+            if (mistakesCounter <= (wordsTotalCounter * gradeB.Item3) / 100)
             {
-                gradeAwarded = availableGrades[2];
+                gradeAwarded = gradeB.Item1;
             }
             else
             {
-                gradeAwarded = availableGrades[3];
+                gradeAwarded = gradeC.Item1;
             }
         }
-        else if (totalScore >= scoreRequiredForC)
+        else if (totalScore >= gradeC.Item2)
         {
-            if (mistakesCounter <= mistakesAllowedForC)
+            if (mistakesCounter <= (wordsTotalCounter * gradeC.Item3) / 100)
             {
-                gradeAwarded = availableGrades[3];
+                gradeAwarded = gradeC.Item1;
             }
             else
             {
-                gradeAwarded = availableGrades[4];
+                gradeAwarded = gradeD.Item1;
             }
         }
-        else if (totalScore >= scoreRequiredForD)
+        else if (totalScore >= gradeD.Item2)
         {
-            if (mistakesCounter <= mistakesAllowedForD)
+            if (mistakesCounter <= (wordsTotalCounter * gradeD.Item3) / 100)
             {
-                gradeAwarded = availableGrades[4];
+                gradeAwarded = gradeD.Item1;
             }
             else
             {
-                gradeAwarded = availableGrades[5];
+                gradeAwarded = gradeF;
             }
         }
         else
         {
-            gradeAwarded = availableGrades[5];
+            gradeAwarded = gradeF;
         }
 
         return gradeAwarded;
@@ -194,29 +211,64 @@ public class ScoreManager : Singleton<ScoreManager>
     public void DisplayGrade()
     {
         CalculateGrade(WordDifficulty.Easy, totalScore);
+
+        switch (gradeAwarded)
+        {
+            case 'S':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeSSprite;
+                break;
+            case 'A':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeASprite;
+                break;
+            case 'B':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeBSprite;
+                break;
+            case 'C':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeCSprite;
+                break;
+            case 'D':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeDSprite;
+                break;
+            case 'F':
+                gradeSpriteImage.GetComponent<Image>().sprite = gradeFSprite;
+                break;
+        }
+
         Debug.Log("Grade awarded: " + gradeAwarded);
-        // display grade here
+        ShowGrade(true);
     }
 
-    public IEnumerator DisplayScore()
+    public void ShowGrade(bool animation)
+    {
+        switch (animation)
+        {
+            case true:
+                // animation here
+                gradeSpriteImage.SetActive(true);
+                break;
+
+            case false:
+                gradeSpriteImage.SetActive(true);
+                break;
+        }
+    }
+
+    public void DisplayScore()
     {
         scorePanel.SetActive(true);
 
-        StartCoroutine(ShowScoreAnimation(easyWordsText, realTimeBetweenLetters));
-        StartCoroutine(ShowScoreAnimation(mediumWordsText, realTimeBetweenLetters));
-        StartCoroutine(ShowScoreAnimation(hardWordsText, realTimeBetweenLetters));
-        StartCoroutine(ShowScoreAnimation(mistakesText, realTimeBetweenLetters));
-        
-        yield return new WaitForSeconds(1f);
-        StartCoroutine(ShowScoreAnimation(scoreText, realTimeBetweenLetters));
-
-        CalculateGrade(GameManager.Instance.levelDifficulty, totalScore);
-        DisplayGrade();
+        StartCoroutine(ShowScoreAnimation(easyWordsText, easyWordsHeader, realTimeBetweenLetters)); // start coroutine chain
     }
 
-    public IEnumerator ShowScoreAnimation(TextMeshProUGUI text, float realTimeBetweenLetters)
+    public IEnumerator ShowScoreAnimation(TextMeshProUGUI text, TextMeshProUGUI textHeader, float realTimeBetweenLetters)
     {
-        char[] randomLetters = { '#', '@', '&', '%', '$', '?', '|' };
+        text.enabled = true;
+        textHeader.enabled = true;
+        char[] randomLetters = { '#', '@', '&', '%', '$', '?' };
+        if (text.text == 0.ToString() || text.text == default)
+        {
+            text.text = "0";
+        }
 
         if (int.TryParse(text.text, out int textNumbers))
         {
@@ -228,16 +280,62 @@ public class ScoreManager : Singleton<ScoreManager>
         }
 
         Color defaultTextColor = text.color;
-        foreach (char letter in text.text)
+
+        char[] textSplit = text.text.ToCharArray(); // deconstruct the text into separate strings
+        
+        for (int i = 0; i < textSplit.Length; i++)
         {
+            textSplit[i] = ' ';
+        }
+
+        Debug.Log(textSplit.Length);
+
+        int iterationCounter = 0;
+        foreach (char character in textSplit)
+        {
+            char currentLetter = textSplit[iterationCounter];
             for (int i = 0; i < randomLetters.Length; i++)
             {
-                text.text = text.text.Replace(letter, randomLetters[i]);
-                text.color = UnityEngine.Random.ColorHSV();
+                currentLetter = randomLetters[i];
+                textSplit[iterationCounter] = currentLetter;
+                if (iterationCounter > 0)
+                {
+                    textSplit[iterationCounter - 1] = textNumbers.ToString()[iterationCounter - 1];
+                }
+                text.text = textSplit.ArrayToString();
+                text.color = Random.ColorHSV();
+                text.color.MinAlpha(defaultTextColor);
                 yield return new WaitForSecondsRealtime(realTimeBetweenLetters);
             }
+            iterationCounter++;
         }
+
         text.color = defaultTextColor;
         text.text = textNumbers.ToString();
+
+        // start next coroutine if there is one
+
+        if (text == easyWordsText)
+        {
+            StartCoroutine(ShowScoreAnimation(mediumWordsText, mediumWordsHeader, realTimeBetweenLetters));
+        }
+        else if (text == mediumWordsText)
+        {
+            StartCoroutine(ShowScoreAnimation(hardWordsText, hardWordsHeader, realTimeBetweenLetters));
+        }
+        else if (text == hardWordsText)
+        {
+            StartCoroutine(ShowScoreAnimation(mistakesText, mistakesTextHeader, realTimeBetweenLetters));
+        }
+        else if (text == mistakesText)
+        {
+            StartCoroutine(ShowScoreAnimation(scoreText, scoreTextHeader, realTimeBetweenLetters));
+        }
+        else if (text ==  scoreText)
+        {
+            yield return new WaitForSeconds(1f);
+            CalculateGrade(GameManager.Instance.levelDifficulty, totalScore);
+            DisplayGrade();
+        }
     }
 }

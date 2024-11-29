@@ -84,7 +84,7 @@ public class BoundaryDetector : MonoBehaviour
             {
                 UIManager.Instance.DisplayCountdown(timeRemaining.ToString());
             }
-            Debug.Log("Time left: " + timeRemaining + " seconds");
+            //Debug.Log("Time left: " + timeRemaining + " seconds");
         }
         else
         {

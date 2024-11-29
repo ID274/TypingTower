@@ -45,6 +45,7 @@ public class KeyboardManager : Singleton<KeyboardManager>
                 InputManager.Instance.OnValueChanged();
             }
         }
+        ScoreManager.Instance.AddMistake();
     }
 
     public void TakeInput(char key)

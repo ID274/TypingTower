@@ -10,6 +10,8 @@ public class GameManager : Singleton<GameManager>
 
     [Header("Level Details")]
     public WordDifficulty levelDifficulty;
+    public int levelIndex = 0;
+    public int seed;
 
     [Header("Word Spawner")]
     public Transform spawnPoint;
@@ -90,6 +92,7 @@ public class GameManager : Singleton<GameManager>
         gameState = GameState.GameOver;
         InputManager.Instance.DisableInput();
         InputManager.Instance.inputField.enabled = false;
+        ScoreManager.Instance.DisplayScore();
     }
 
     public void StartGame()
@@ -122,6 +125,7 @@ public class GameManager : Singleton<GameManager>
     public void WordHasBeenFound(Word word)
     {
         WordManager.Instance.RemoveWord(word);
+        ScoreManager.Instance.AddWord(word.difficulty);
         // do some fancy stuff
     }
 

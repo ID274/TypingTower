@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class BoundaryDetector : MonoBehaviour
@@ -10,35 +9,40 @@ public class BoundaryDetector : MonoBehaviour
 
     private Collider collidingBlock = null;
 
+    private float timer = 0f;
+    private float countdownTimer = 0f;
+    private bool isCountdownActive = false;
+
     private void Awake()
     {
         material = GetComponent<Renderer>().material;
     }
+
     private void FixedUpdate()
     {
-        switch (colliding)
+        // Update the material color based on the colliding state
+        material.color = colliding ? collidingColor : normalColor;
+    }
+
+    private void Update()
+    {
+        if (isCountdownActive)
         {
-            case true:
-                material.color = collidingColor;
-                break;
-            case false:
-                material.color = normalColor;
-                break;
+            UpdateCountdownTimer();
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (GameManager.Instance.gameState == GameManager.GameState.Playing)
         {
-            if (collidingBlock != null)
-            {
-                return;
-            }
+            if (collidingBlock != null) return;
+
             if (other.CompareTag("Word Object"))
             {
                 colliding = true;
                 collidingBlock = other;
-                StartCoroutine(CountDownTimer());
+                StartCountdown();
             }
         }
     }
@@ -51,35 +55,43 @@ public class BoundaryDetector : MonoBehaviour
             {
                 collidingBlock = null;
                 colliding = false;
-                UIManager.Instance.HideCountdown();
+                StopCountdown();
             }
         }
     }
 
-    private IEnumerator CountDownTimer()
+    private void StartCountdown()
     {
-        yield return new WaitForSeconds(0.5f);
-        if (!colliding)
-        {
-            yield break;
-        }
+        isCountdownActive = true;
+        countdownTimer = 0f; // Reset the countdown timer
+    }
+
+    private void StopCountdown()
+    {
+        isCountdownActive = false;
+        countdownTimer = 0f; // Reset the countdown timer
+        UIManager.Instance.HideCountdown();
+    }
+
+    private void UpdateCountdownTimer()
+    {
         int timeLeft = GameManager.Instance.lossCountdownTime;
-        for (int i = 0; i < GameManager.Instance.lossCountdownTime; i++)
+        countdownTimer += Time.deltaTime;
+        if (countdownTimer < timeLeft)
         {
-            UIManager.Instance.DisplayCountdown(timeLeft.ToString());
-            Debug.Log("Time left: " + (GameManager.Instance.lossCountdownTime - i) + " seconds");
-            yield return new WaitForSecondsRealtime(1);
-            if (colliding == false)
+            int timeRemaining = Mathf.CeilToInt(timeLeft - countdownTimer); // Use Mathf.CeilToInt for consistent seconds display
+            if (timeRemaining < timeLeft)
             {
-                yield break;
+                UIManager.Instance.DisplayCountdown(timeRemaining.ToString());
             }
-            timeLeft--;
+            Debug.Log("Time left: " + timeRemaining + " seconds");
         }
-        if (colliding)
+        else
         {
-            Debug.Log("You lose!");
-            UIManager.Instance.DisplayCountdown("L");
+            Debug.Log($"You lose! {timeLeft}");
+            // display UI manager score panel
             GameManager.Instance.GameOver();
+            StopCountdown();
         }
     }
 }

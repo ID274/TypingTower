@@ -88,7 +88,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         gameState = GameState.GameOver;
-        InputManager.Instance.DisableKeyboard();
+        InputManager.Instance.DisableInput();
         InputManager.Instance.inputField.enabled = false;
     }
 

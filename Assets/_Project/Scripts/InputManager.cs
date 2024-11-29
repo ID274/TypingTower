@@ -8,6 +8,7 @@ public class InputManager : Singleton<InputManager>
 
     private void Start()
     {
+        inputField.enabled = true;
         if (GameManager.Instance.useOnScreenKeyboard)
         {
             inputField.DeactivateInputField();
@@ -49,9 +50,18 @@ public class InputManager : Singleton<InputManager>
         KeyboardManager.Instance.ClearInput();
     }
 
-    public void DisableKeyboard()
+    public void DisableInput()
     {
         KeyboardManager.Instance.DisableKeyboard();
+        inputField.DeactivateInputField();
+        inputField.gameObject.SetActive(false);
+    }
+
+    public void EnableInput()
+    {
+        KeyboardManager.Instance.EnableKeyboard();
+        inputField.ActivateInputField();
+        inputField.gameObject.SetActive(true);
     }
 }
 

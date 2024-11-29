@@ -66,6 +66,12 @@ public class KeyboardManager : Singleton<KeyboardManager>
         keyboard.SetActive(false);
     }
 
+    public void EnableKeyboard()
+    {
+        keyboardActive = true;
+        keyboard.SetActive(true);
+    }
+
     public void ClearInput()
     {
         currentInput = "";

@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -48,12 +49,9 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         }
     }
 
-    private void OnDestroy()
+    public void SpawnExplosion()
     {
-        if (explosionPrefab != null)
-        {
-            GameObject explosionInstance = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(explosionInstance, 3f);
-        }
+        GameObject explosionInstance = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        Destroy(explosionInstance, 3f);
     }
 }

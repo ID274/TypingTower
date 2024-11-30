@@ -3,7 +3,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.VFX;
 
 public class ScoreManager : Singleton<ScoreManager>
 {
@@ -33,6 +32,25 @@ public class ScoreManager : Singleton<ScoreManager>
     [Header("Show Text Animation")]
     [SerializeField] private float realTimeBetweenLetters = 0.2f;
 
+    [Header("Combo Settings & Attributes")]
+    public int comboCounter = 0;
+    [SerializeField] private int highestCombo = 0;
+    [SerializeField] private int comboBonus = 20;
+    [SerializeField] private Color comboColor1;
+    [SerializeField] private Color comboColor2;
+    [SerializeField] private Color comboColor3;
+    [SerializeField] private Color comboColor4;
+    [SerializeField] private GameObject mistakeHurtPanel;
+    [SerializeField] private AnimationClip hurtAnimation;
+    [SerializeField] private AnimationClip cameraShake;
+    private int mistakesLastWord = 0;
+    private int totalBonusPoints = 0;
+
+    [Header("Combo References")]
+    public GameObject comboText;
+    [SerializeField] private GameObject comboSpawnPoint;
+    [SerializeField] private GameObject comboFallingText;
+
     [Header("References")]
     [SerializeField] private GameObject scorePanel;
     [SerializeField] private TextMeshProUGUI scoreText;
@@ -45,6 +63,8 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private TextMeshProUGUI hardWordsHeader;
     [SerializeField] private TextMeshProUGUI mistakesText;
     [SerializeField] private TextMeshProUGUI mistakesTextHeader;
+    [SerializeField] private TextMeshProUGUI highestComboText;
+    [SerializeField] private TextMeshProUGUI highestComboTextHeader;
     [SerializeField] private Sprite gradeSSprite, gradeASprite, gradeBSprite, gradeCSprite, gradeDSprite, gradeFSprite;
     [SerializeField] private GameObject gradeSpriteImage;
     [SerializeField] private GameObject scoreTracker;
@@ -69,7 +89,72 @@ public class ScoreManager : Singleton<ScoreManager>
         hardWordsHeader.enabled = false;
         mistakesText.enabled = false;
         mistakesTextHeader.enabled = false;
+        highestComboText.enabled = false;
+        highestComboTextHeader.enabled = false;
 
+    }
+
+
+    public void CheckCombo()
+    {
+        if (comboCounter > highestCombo)
+        {
+            highestCombo = comboCounter;
+        }
+        if (mistakesLastWord != mistakesCounter)
+        {
+            comboCounter = 0;
+        }
+        else
+        {
+            comboCounter++;
+        }
+
+        mistakesLastWord = mistakesCounter;
+        DisplayCombo();
+    }
+
+
+    private void Update()
+    {
+        TextMeshProUGUI comboTextMesh = comboText.GetComponent<TextMeshProUGUI>();
+        if (comboCounter < 3)
+        {
+            // Smooth transition between comboColor3 and comboColor2
+            float t = Mathf.PingPong(Time.time, 1); // Cycles between 0 and 1 over time
+            comboTextMesh.color = Color.Lerp(Color.white, comboColor1, t);
+        }
+        else if (comboCounter >= 3 && comboCounter < 5)
+        {
+            float t = Mathf.PingPong(Time.time, 1); // Cycles between 0 and 1 over time
+            comboTextMesh.color = Color.Lerp(comboColor1, comboColor2, t);
+        }
+        else if (comboCounter >= 5 && comboCounter < 10)
+        {
+            float t = Mathf.PingPong(Time.time, 1); // Cycles between 0 and 1 over time
+            comboTextMesh.color = Color.Lerp(comboColor2, comboColor3, t);
+        }
+        else // 10 or higher
+        {
+            float t = Mathf.PingPong(Time.time, 1); // Cycles between 0 and 1 over time
+            comboTextMesh.color = Color.Lerp(comboColor3, comboColor4, t);
+        }
+    }
+
+    public void DisplayCombo()
+    {
+        if (comboCounter == 0)
+        {
+            comboText.SetActive(false);
+            return;
+        }
+        else
+        {
+            comboText.SetActive(true);
+        }
+
+        TextMeshProUGUI comboTMP = comboText.GetComponent<TextMeshProUGUI>();
+        comboTMP.text = $"x{comboCounter}";
     }
 
 
@@ -100,6 +185,19 @@ public class ScoreManager : Singleton<ScoreManager>
         fallingTextInstance.color = Color.green;
         Destroy(fallingTextInstance.gameObject, 3f);
         wordsTotalCounter++;
+        CheckCombo();
+        Debug.Log(comboCounter);
+        if (comboCounter > 0)
+        {
+            TextMeshProUGUI fallingComboTextInstance = Instantiate(comboFallingText, new Vector3(scoreTracker.transform.position.x + 10, scoreTracker.transform.position.y - 100, scoreTracker.transform.position.z), Quaternion.identity, comboSpawnPoint.transform).GetComponent<TextMeshProUGUI>();
+            string comboPointsAdded = $"+{comboBonus * comboCounter}";
+            totalBonusPoints += comboBonus * comboCounter;
+            UpdateScore();
+            fallingComboTextInstance.text = comboPointsAdded;
+            fallingComboTextInstance.color = comboText.GetComponent<TextMeshProUGUI>().color;
+            Destroy(fallingComboTextInstance.gameObject, 3f);
+        }
+        UpdateMistakesTracker();
     }
 
     public void AddEasyWord()
@@ -126,17 +224,49 @@ public class ScoreManager : Singleton<ScoreManager>
     public void AddMistake()
     {
         mistakesCounter++;
+        StartCoroutine(HurtAnimation());
+        CheckCombo();
         mistakesText.text = mistakesCounter.ToString();
         TextMeshProUGUI fallingTextInstance = Instantiate(fallingText, new Vector3(scoreTracker.transform.position.x + 10, scoreTracker.transform.position.y - 100, scoreTracker.transform.position.z), Quaternion.identity, pointSpawnPoint.transform).GetComponent<TextMeshProUGUI>();
         fallingTextInstance.text = $"-{mistakePenalty}";
         fallingTextInstance.color = Color.red;
-        mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()}";
+        UpdateMistakesTracker();
         UpdateScore();
+    }
+
+    private IEnumerator HurtAnimation()
+    {
+        Animator hurtAnimator = mistakeHurtPanel.GetComponent<Animator>();
+        mistakeHurtPanel.SetActive(true);
+        hurtAnimator.Play(hurtAnimation.name.ToString());
+        Camera.main.GetComponent<Animator>().SetTrigger("mistakeMade");
+        yield return new WaitForSeconds(hurtAnimation.length);
+        mistakeHurtPanel.SetActive(false);
+    }
+
+    public void UpdateMistakesTracker()
+    {
+        if (wordsTotalCounter > 0)
+        {
+            float percentage = PercentMistakes();
+            mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()} ({percentage.ToString("0.")}%)";
+        }
+        else if (mistakesCounter >= wordsTotalCounter)
+        {
+            mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()} (100%)";
+        }
+    }
+
+    public float PercentMistakes()
+    {
+        float percentage = ((float)mistakesCounter / wordsTotalCounter) * 100;
+        percentage = Mathf.Clamp(percentage, 0, 100);
+        return percentage;
     }
 
     public void UpdateScore()
     {
-        totalScore = (easyWordsCounter * easyWordsScore) + (mediumWordsCounter * mediumWordsScore) + (hardWordsCounter * hardWordsScore) - (mistakesCounter * mistakePenalty);
+        totalScore = (easyWordsCounter * easyWordsScore) + (mediumWordsCounter * mediumWordsScore) + (hardWordsCounter * hardWordsScore) - (mistakesCounter * mistakePenalty) + totalBonusPoints;
         if (totalScore < 0)
         {
             totalScore = 0;
@@ -284,10 +414,21 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void DisplayScore()
     {
+        mistakesText.text = $"{mistakesCounter} ({PercentMistakes().ToString("0.")}%)";
+
+        highestComboText.text = $"x{highestCombo}";
+
         scoreTracker.SetActive(false);
         mistakesTracker.gameObject.SetActive(false);
-        scorePanel.SetActive(true);
+        comboText.SetActive(false);
 
+        StartCoroutine(DisplayScoreDelayed(1.5f));
+    }
+
+    private IEnumerator DisplayScoreDelayed(float delay)
+    {
+        scorePanel.SetActive(true);
+        yield return new WaitForSecondsRealtime(delay);
         StartCoroutine(ShowScoreAnimation(easyWordsText, easyWordsHeader, realTimeBetweenLetters)); // start coroutine chain
     }
 
@@ -295,57 +436,60 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         text.enabled = true;
         textHeader.enabled = true;
+
         char[] randomLetters = { '#', '@', '&', '%', '$', '?' };
-        if (text.text == 0.ToString() || text.text == default)
+
+        // Preserve the original text content
+        string originalText = text.text;
+
+        // Ensure the dynamic text has valid content
+        if (string.IsNullOrEmpty(originalText))
         {
-            text.text = "0";
+            originalText = "?"; // Default to "?" if empty
         }
 
-        if (int.TryParse(text.text, out int textNumbers))
-        {
-            Debug.Log("Parsed number: " + textNumbers);
-        }
-        else
-        {
-            Debug.LogWarning("Invalid number format in text: " + text.text);
-        }
-
+        // Split the original dynamic text into characters for animation
+        char[] textSplit = originalText.ToCharArray();
         Color defaultTextColor = text.color;
 
-        char[] textSplit = text.text.ToCharArray(); // deconstruct the text into separate strings
-        
+        // Replace all dynamic content with spaces initially
         for (int i = 0; i < textSplit.Length; i++)
         {
             textSplit[i] = ' ';
         }
 
-        Debug.Log(textSplit.Length);
+        Debug.Log($"Dynamic text length: {textSplit.Length}");
 
         int iterationCounter = 0;
-        foreach (char character in textSplit)
+        foreach (char _ in textSplit)
         {
-            char currentLetter = textSplit[iterationCounter];
             for (int i = 0; i < randomLetters.Length; i++)
             {
-                currentLetter = randomLetters[i];
-                textSplit[iterationCounter] = currentLetter;
-                if (iterationCounter > 0)
-                {
-                    textSplit[iterationCounter - 1] = textNumbers.ToString()[iterationCounter - 1];
-                }
-                text.text = textSplit.ArrayToString();
-                text.color = Random.ColorHSV();
-                text.color.MinAlpha(defaultTextColor);
+                // Replace the current character with a random letter
+                textSplit[iterationCounter] = randomLetters[i];
+                text.text = new string(textSplit); // Update dynamic text only
+
+                // Assign a random color while preserving alpha
+                Color randomColor = Random.ColorHSV();
+                text.color = new Color(randomColor.r, randomColor.g, randomColor.b, defaultTextColor.a);
+
                 yield return new WaitForSecondsRealtime(realTimeBetweenLetters);
             }
+
+            // Restore the original character at the current position
+            if (iterationCounter < originalText.Length)
+            {
+                textSplit[iterationCounter] = originalText[iterationCounter];
+            }
+
             iterationCounter++;
         }
 
+        // Reset the text color and restore the full original dynamic text
         text.color = defaultTextColor;
-        text.text = textNumbers.ToString();
+        text.text = originalText;
 
-        // start next coroutine if there is one
-
+        // Continue the coroutine chain
         if (text == easyWordsText)
         {
             StartCoroutine(ShowScoreAnimation(mediumWordsText, mediumWordsHeader, realTimeBetweenLetters));
@@ -360,13 +504,18 @@ public class ScoreManager : Singleton<ScoreManager>
         }
         else if (text == mistakesText)
         {
+            StartCoroutine(ShowScoreAnimation(highestComboText, highestComboTextHeader, realTimeBetweenLetters));
+        }
+        else if (text == highestComboText)
+        {
             StartCoroutine(ShowScoreAnimation(scoreText, scoreTextHeader, realTimeBetweenLetters));
         }
-        else if (text ==  scoreText)
+        else if (text == scoreText)
         {
             yield return new WaitForSeconds(1f);
             CalculateGrade(GameManager.Instance.levelDifficulty, totalScore);
             DisplayGrade();
         }
     }
+
 }

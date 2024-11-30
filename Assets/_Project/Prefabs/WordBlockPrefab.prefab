@@ -150,6 +150,7 @@ MonoBehaviour:
   explosionPrefab: {fileID: 6321854201465939513, guid: 34a87a8bba959e14694170a2cc098896, type: 3}
   objectColor: {r: 0.44992724, g: 0.47798735, b: 0.001503004, a: 1}
   randomColor: 0
+  useComboColor: 1
 --- !u!1 &582678557341256521
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +208,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -2820590186564014266, guid: d8f9b7fe4acdb45468bfeff937c83fd7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -251,8 +252,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Placeholder
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d8f9b7fe4acdb45468bfeff937c83fd7, type: 2}
+  m_sharedMaterial: {fileID: -2820590186564014266, guid: d8f9b7fe4acdb45468bfeff937c83fd7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 3.55
+  m_fontSize: 2.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

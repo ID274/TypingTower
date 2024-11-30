@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
 
     [Header("Level Details")]
     public WordDifficulty levelDifficulty;
-    public int levelIndex = 0;
+    private int levelIndex = 0;
     public int seed;
 
     [Header("Word Spawner")]
@@ -46,6 +46,7 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         levelDifficulty = WordManager.Instance.LoadWordList(WordManager.Instance.availableWordLists[WordManager.Instance.indexToLoad]);
+        levelIndex = WordManager.Instance.indexToLoad;
         SetResolution(585, 1266, true);
     }
 
@@ -105,9 +106,16 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         gameState = GameState.GameOver;
+        Time.timeScale = 1;
         MusicManager.Instance.StartCoroutine(MusicManager.Instance.FadeOutCurrentTrack());
-        InputManager.Instance.DisableInput();
+        UIManager.Instance.GameOverBehaviour();
         InputManager.Instance.inputField.enabled = false;
+        StartCoroutine(DelayScore(2f));
+    }
+
+    private IEnumerator DelayScore(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         ScoreManager.Instance.DisplayScore();
     }
 

@@ -165,6 +165,7 @@ public class WordManager : Singleton<WordManager>
                 int index = wordList.IndexOf(word);
                 if (index >= 0 && index < listOfWordObjects.Count)
                 {
+                    listOfWordObjects[index].GetComponent<WordObject>().SpawnExplosion();
                     Destroy(listOfWordObjects[index]);
                     listOfWordObjects.RemoveAt(index);
                     wordList.RemoveAt(index);

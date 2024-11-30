@@ -1,12 +1,18 @@
 using PatternLibrary;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager : Singleton<InputManager>
 {
     public TMP_InputField inputField;
 
     private string previousText;
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     public void StartInputUI()
     {
@@ -18,8 +24,8 @@ public class InputManager : Singleton<InputManager>
         else
         {
             inputField.ActivateInputField();
+            inputField.Select();
         }
-
         previousText = inputField.text;
     }
 
@@ -35,10 +41,6 @@ public class InputManager : Singleton<InputManager>
     {
         SFXManager.Instance.PlaySFX(0, true); // play keyboard press sound with random pitch
         inputField.text = inputField.text.ToUpper();
-        if (previousText.Length < inputField.text.Length)
-        {
-            KeyboardManager.Instance.mistakePending = false;
-        }
         Debug.Log($"OnValueChanged: {inputField.text}");
         bool wordFound = WordSearchManager.Instance.CheckWord(inputField.text);
         if (wordFound)
@@ -63,6 +65,7 @@ public class InputManager : Singleton<InputManager>
 
     public void ClearField()
     {
+        KeyboardManager.Instance.mistakePending = false;
         inputField.text = "";
         KeyboardManager.Instance.ClearInput();
     }

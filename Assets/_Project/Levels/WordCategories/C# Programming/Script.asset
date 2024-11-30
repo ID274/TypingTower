@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f3583b9f3763ec438f9929dcbe805f3, type: 3}
-  m_Name: Strawberry
+  m_Name: Script
   m_EditorClassIdentifier: 
-  word: Strawberry
-  additionalText: They are the only fruit with seeds on the outside!
-  difficulty: 1
+  word: Script
+  additionalText: 
+  difficulty: 0

@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 
 public class WordBlock : WordObject
 {
     [SerializeField] private Color objectColor;
     [SerializeField] private bool randomColor;
+    [SerializeField] private bool useComboColor;
     protected override void Awake()
     {
         base.Awake();
@@ -21,6 +23,14 @@ public class WordBlock : WordObject
         SetMaterialColor(materialColor);
     }
 
+    private void Update()
+    {
+        if (useComboColor)
+        {
+            SetToComboColor();
+        }
+    }
+
     private Color RandomColor()
     {
         Color color = new Color();
@@ -30,5 +40,18 @@ public class WordBlock : WordObject
         color.a = 1;
         Debug.Log($"Color {color})");
         return color;
+    }
+
+    private void SetToComboColor()
+    {
+        if (ScoreManager.Instance.comboCounter > 3)
+        {
+            materialColor = ScoreManager.Instance.comboText.GetComponent<TextMeshProUGUI>().color;
+            SetMaterialColor(materialColor);
+        }
+        else
+        {
+            materialColor = objectColor;
+        }
     }
 }

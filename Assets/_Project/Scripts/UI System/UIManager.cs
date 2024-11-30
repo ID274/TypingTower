@@ -22,6 +22,15 @@ public class UIManager : Singleton<UIManager>
         InputManager.Instance.StartInputUI();
     }
 
+    public void GameOverBehaviour()
+    {
+        pauseButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
+        unPauseButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
+        settingsButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
+
+        inputUI.GetComponent<Animator>().SetBool("isGameOver", true);   
+    }
+
     public void StartGame()
     {
         GameManager.Instance.StartGame();

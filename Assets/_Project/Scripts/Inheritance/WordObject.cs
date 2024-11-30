@@ -6,6 +6,7 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
     private TextMeshPro wordText;
     protected Color materialColor = Color.white;
     private Rigidbody rb;
+    [SerializeField] private GameObject explosionPrefab;
     protected virtual void Awake()
     {
         AssignTextReference();
@@ -44,6 +45,15 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         if (rb.velocity.y > 0)
         {
             rb.velocity = new Vector3 (rb.velocity.x, 0.1f, rb.velocity.z);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (explosionPrefab != null)
+        {
+            GameObject explosionInstance = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Destroy(explosionInstance, 3f);
         }
     }
 }

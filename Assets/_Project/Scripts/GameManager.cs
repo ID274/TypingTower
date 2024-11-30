@@ -18,6 +18,7 @@ public class GameManager : Singleton<GameManager>
     public float spawnInterval = 3f;
     public GameObject wordObjectPrefab;
     private bool canSpawn = true;
+    [SerializeField] private float initialDelay = 1f;
 
     [Header("Game Speed")]
     public float gameSpeed = 1f;
@@ -26,7 +27,9 @@ public class GameManager : Singleton<GameManager>
     public int lossCountdownTime = 3;
 
     [Header("Game State")]
-    public GameState gameState = GameState.Paused;
+    public GameState gameState = GameState.PreStart;
+    private GameState previousState = GameState.PreStart;
+    [SerializeField] private GameObject restartButton;
 
     [Header("Trie Settings")]
     public bool onlyBottomWordTypeable = true;
@@ -43,6 +46,7 @@ public class GameManager : Singleton<GameManager>
     {
         base.Awake();
         levelDifficulty = WordManager.Instance.LoadWordList(WordManager.Instance.availableWordLists[WordManager.Instance.indexToLoad]);
+        SetResolution(585, 1266, true);
     }
 
     private void Update()
@@ -50,7 +54,7 @@ public class GameManager : Singleton<GameManager>
         if (canSpawn && gameState == GameState.Playing)
         {
             StartCoroutine(SpawnCooldown());
-            var wordInstance = WordFactory.Instance.CreateWordObject(wordObjectPrefab, spawnPoint.position);
+            StartCoroutine(SpawnWordObject());
         }
     }
 
@@ -59,6 +63,12 @@ public class GameManager : Singleton<GameManager>
         canSpawn = false;
         yield return new WaitForSeconds(spawnInterval);
         canSpawn = true;
+    }
+
+    public IEnumerator SpawnWordObject()
+    {
+        yield return new WaitForSecondsRealtime(initialDelay);
+        var wordInstance = WordFactory.Instance.CreateWordObject(wordObjectPrefab, spawnPoint.position);
     }
 
     private void FixedUpdate()
@@ -80,6 +90,11 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public static void SetResolution(int width, int height, bool fullscreen)
+    {
+        Screen.SetResolution(width, height, fullscreen);
+    }
+
     private float IncrementGameSpeed()
     {
         gameSpeed *= speedIncreaseStep;
@@ -90,6 +105,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         gameState = GameState.GameOver;
+        MusicManager.Instance.StartCoroutine(MusicManager.Instance.FadeOutCurrentTrack());
         InputManager.Instance.DisableInput();
         InputManager.Instance.inputField.enabled = false;
         ScoreManager.Instance.DisplayScore();
@@ -98,28 +114,49 @@ public class GameManager : Singleton<GameManager>
     public void StartGame()
     {
         gameState = GameState.Playing;
+        MusicManager.Instance.PlayMusic(0, true);
+        UIManager.Instance.EnableUI();
         InputManager.Instance.inputField.enabled = true;
     }
 
     public void PauseGame()
     {
+        previousState = gameState;
         gameState = GameState.Paused;
         Time.timeScale = 0;
         InputManager.Instance.inputField.enabled = false;
+        UIManager.Instance.unPauseButton.SetActive(true);
+        UIManager.Instance.pauseButton.SetActive(false);
     }
 
     public void ResumeGame()
     {
-        gameState = GameState.Playing;
+        if (previousState != GameState.Paused)
+        {
+            gameState = previousState;
+        }
+        else
+        {
+            gameState = GameState.Playing;
+        }
         Time.timeScale = gameSpeed;
         InputManager.Instance.inputField.enabled = true;
+        UIManager.Instance.unPauseButton.SetActive(false);
+        UIManager.Instance.pauseButton.SetActive(true);
     }
 
     public void RestartGame()
     {
-        gameState = GameState.PreStart;
-        Time.timeScale = 1;
-        InputManager.Instance.inputField.enabled = true;
+        MySceneManager.Instance.ReloadCurrentScene();
+        //gameState = GameState.PreStart;
+        //Time.timeScale = 1;
+        //InputManager.Instance.inputField.enabled = true;
+    }
+
+    public IEnumerator AllowRestart()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        restartButton.SetActive(true);
     }
 
     public void WordHasBeenFound(Word word)

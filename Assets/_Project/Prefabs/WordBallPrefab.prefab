@@ -318,4 +318,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6d1c655b1a131b4896f1ac21c6ae726, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 6321854201465939513, guid: 34a87a8bba959e14694170a2cc098896, type: 3}
   objectColor: {r: 0.51572317, g: 0.1929907, b: 0.48505518, a: 1}

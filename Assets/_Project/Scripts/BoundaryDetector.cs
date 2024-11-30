@@ -9,7 +9,6 @@ public class BoundaryDetector : MonoBehaviour
 
     private Collider collidingBlock = null;
 
-    private float timer = 0f;
     private float countdownTimer = 0f;
     private bool isCountdownActive = false;
 

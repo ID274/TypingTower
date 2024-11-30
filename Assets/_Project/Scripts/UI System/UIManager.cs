@@ -1,13 +1,31 @@
 using PatternLibrary;
-using UnityEngine;
+using System.Collections;
 using TMPro;
+using UnityEngine;
 
 public class UIManager : Singleton<UIManager>
 {
-    public GameObject pauseButton, unPauseButton;
+    public GameObject pauseButton, unPauseButton, settingsButton, buttons;
+
+    public GameObject tapToStart;
+
+    public GameObject inputUI;
 
     public TextMeshProUGUI countdownText;
     public Color endCooldownColor;
+
+    public void EnableUI()
+    {
+        tapToStart.SetActive(false);
+        inputUI.SetActive(true);
+        buttons.SetActive(true);
+        InputManager.Instance.StartInputUI();
+    }
+
+    public void StartGame()
+    {
+        GameManager.Instance.StartGame();
+    }
 
     public void PauseGame()
     {
@@ -20,7 +38,13 @@ public class UIManager : Singleton<UIManager>
     public void OpenSettings()
     {
         PauseGame();
+        SettingsManager.Instance.OpenSettings();
     }
+    public void CloseSettings()
+    {
+        SettingsManager.Instance.CloseSettings();
+    }
+
     public void RestartGame()
     {
         GameManager.Instance.RestartGame();

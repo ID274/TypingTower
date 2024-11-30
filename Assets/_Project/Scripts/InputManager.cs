@@ -6,9 +6,10 @@ public class InputManager : Singleton<InputManager>
 {
     public TMP_InputField inputField;
 
-    void Start()
+    private string previousText;
+
+    public void StartInputUI()
     {
-        inputField.enabled = true;
         if (GameManager.Instance.useOnScreenKeyboard)
         {
             inputField.DeactivateInputField();
@@ -18,6 +19,8 @@ public class InputManager : Singleton<InputManager>
         {
             inputField.ActivateInputField();
         }
+
+        previousText = inputField.text;
     }
 
     void Update()
@@ -30,7 +33,12 @@ public class InputManager : Singleton<InputManager>
 
     public void OnValueChanged()
     {
+        SFXManager.Instance.PlaySFX(0, true); // play keyboard press sound with random pitch
         inputField.text = inputField.text.ToUpper();
+        if (previousText.Length < inputField.text.Length)
+        {
+            KeyboardManager.Instance.mistakePending = false;
+        }
         Debug.Log($"OnValueChanged: {inputField.text}");
         bool wordFound = WordSearchManager.Instance.CheckWord(inputField.text);
         if (wordFound)
@@ -39,6 +47,7 @@ public class InputManager : Singleton<InputManager>
             GameManager.Instance.WordHasBeenFound(wordObjectFound);
             ClearField();
         }
+        previousText = inputField.text;
     }
 
     public void OnFieldSelected()

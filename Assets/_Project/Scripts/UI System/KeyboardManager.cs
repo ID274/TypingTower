@@ -8,6 +8,7 @@ public class KeyboardManager : Singleton<KeyboardManager>
     [Header("Attributes")]
     public int maxInputLength = 18;
     public bool keyboardActive = false;
+    public bool mistakePending = false;
 
     [Header("References")]
     public GameObject keyboard;
@@ -45,12 +46,16 @@ public class KeyboardManager : Singleton<KeyboardManager>
                 InputManager.Instance.OnValueChanged();
             }
         }
-        ScoreManager.Instance.AddMistake();
+        if (mistakePending == false)
+        {
+            ScoreManager.Instance.AddMistake();
+            mistakePending = true;
+        }
     }
 
     public void TakeInput(char key)
     {
-        if (keyboard != null && keyboardActive == true)
+        if (keyboard != null && keyboardActive == true && GameManager.Instance.gameState == GameManager.GameState.Playing)
         {
             if (currentInput.Length < maxInputLength)
             {

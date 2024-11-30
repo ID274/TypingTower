@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 
 public class ScoreManager : Singleton<ScoreManager>
 {
@@ -46,6 +47,10 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private TextMeshProUGUI mistakesTextHeader;
     [SerializeField] private Sprite gradeSSprite, gradeASprite, gradeBSprite, gradeCSprite, gradeDSprite, gradeFSprite;
     [SerializeField] private GameObject gradeSpriteImage;
+    [SerializeField] private GameObject scoreTracker;
+    [SerializeField] private GameObject fallingText;
+    [SerializeField] private GameObject pointSpawnPoint;
+    [SerializeField] private TextMeshProUGUI mistakesTracker;
 
     protected override void Awake()
     {
@@ -70,21 +75,30 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void AddWord(WordDifficulty difficulty)
     {
+        SFXManager.Instance.PlaySFX(1, true);
+        string pointsAdded = "";
         switch (difficulty)
         {
             case WordDifficulty.Easy:
                 AddEasyWord();
+                pointsAdded = $"+{easyWordsScore.ToString()}";
                 break;
             case WordDifficulty.Medium:
                 AddMediumWord();
+                pointsAdded = $"+{mediumWordsScore.ToString()}";
                 break;
             case WordDifficulty.Hard:
                 AddHardWord();
+                pointsAdded = $"+{hardWordsScore.ToString()}";
                 break;
             default:
                 Debug.LogWarning("Invalid word difficulty: " + difficulty);
                 break;
         }
+        TextMeshProUGUI fallingTextInstance = Instantiate(fallingText, new Vector3 (scoreTracker.transform.position.x + 10, scoreTracker.transform.position.y - 100, scoreTracker.transform.position.z), Quaternion.identity, pointSpawnPoint.transform).GetComponent<TextMeshProUGUI>();
+        fallingTextInstance.text = pointsAdded;
+        fallingTextInstance.color = Color.green;
+        Destroy(fallingTextInstance.gameObject, 3f);
         wordsTotalCounter++;
     }
 
@@ -113,13 +127,22 @@ public class ScoreManager : Singleton<ScoreManager>
     {
         mistakesCounter++;
         mistakesText.text = mistakesCounter.ToString();
+        TextMeshProUGUI fallingTextInstance = Instantiate(fallingText, new Vector3(scoreTracker.transform.position.x + 10, scoreTracker.transform.position.y - 100, scoreTracker.transform.position.z), Quaternion.identity, pointSpawnPoint.transform).GetComponent<TextMeshProUGUI>();
+        fallingTextInstance.text = $"-{mistakePenalty}";
+        fallingTextInstance.color = Color.red;
+        mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()}";
         UpdateScore();
     }
 
     public void UpdateScore()
     {
         totalScore = (easyWordsCounter * easyWordsScore) + (mediumWordsCounter * mediumWordsScore) + (hardWordsCounter * hardWordsScore) - (mistakesCounter * mistakePenalty);
+        if (totalScore < 0)
+        {
+            totalScore = 0;
+        }
         scoreText.text = totalScore.ToString();
+        scoreTracker.GetComponent<TextMeshProUGUI>().text = $"Score: {totalScore}";
         Debug.Log("Updated score");
     }
 
@@ -216,26 +239,32 @@ public class ScoreManager : Singleton<ScoreManager>
         {
             case 'S':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeSSprite;
+                SFXManager.Instance.PlaySFX(5, false);
                 break;
             case 'A':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeASprite;
+                SFXManager.Instance.PlaySFX(4, false);
                 break;
             case 'B':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeBSprite;
+                SFXManager.Instance.PlaySFX(3, false);
                 break;
             case 'C':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeCSprite;
+                SFXManager.Instance.PlaySFX(2, false);
                 break;
             case 'D':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeDSprite;
                 break;
             case 'F':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeFSprite;
+                SFXManager.Instance.PlaySFX(6, false);
                 break;
         }
 
         Debug.Log("Grade awarded: " + gradeAwarded);
         ShowGrade(true);
+        StartCoroutine(GameManager.Instance.AllowRestart());
     }
 
     public void ShowGrade(bool animation)
@@ -255,6 +284,8 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void DisplayScore()
     {
+        scoreTracker.SetActive(false);
+        mistakesTracker.gameObject.SetActive(false);
         scorePanel.SetActive(true);
 
         StartCoroutine(ShowScoreAnimation(easyWordsText, easyWordsHeader, realTimeBetweenLetters)); // start coroutine chain

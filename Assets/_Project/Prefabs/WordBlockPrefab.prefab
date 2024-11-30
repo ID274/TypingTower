@@ -147,6 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d4f6b3a082fce943b5eaa34e5421f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 6321854201465939513, guid: 34a87a8bba959e14694170a2cc098896, type: 3}
   objectColor: {r: 0.44992724, g: 0.47798735, b: 0.001503004, a: 1}
   randomColor: 0
 --- !u!1 &582678557341256521

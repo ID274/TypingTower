@@ -9,7 +9,7 @@ using UnityEngine;
 public class MusicManager : Singleton<MusicManager>
 {
     [SerializeField] private AudioClip[] musicClips;
-    private AudioSource audioSource;
+    public AudioSource audioSource;
 
     [Header("Play when scene loaded")]
     [SerializeField] private bool playOnLoad = true;

@@ -1,7 +1,6 @@
 using PatternLibrary;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class InputManager : Singleton<InputManager>
 {
@@ -39,17 +38,24 @@ public class InputManager : Singleton<InputManager>
 
     public void OnValueChanged()
     {
-        SFXManager.Instance.PlaySFX(0, true); // play keyboard press sound with random pitch
-        inputField.text = inputField.text.ToUpper();
-        Debug.Log($"OnValueChanged: {inputField.text}");
-        bool wordFound = WordSearchManager.Instance.CheckWord(inputField.text);
-        if (wordFound)
+        if (inputField.text == " ")
         {
-            Word wordObjectFound = WordSearchManager.Instance.WordFound(inputField.text);
-            GameManager.Instance.WordHasBeenFound(wordObjectFound);
             ClearField();
         }
-        previousText = inputField.text;
+        else
+        {
+            SFXManager.Instance.PlaySFX(0, true); // play keyboard press sound with random pitch
+            inputField.text = inputField.text.ToUpper();
+            Debug.Log($"OnValueChanged: {inputField.text}");
+            bool wordFound = WordSearchManager.Instance.CheckWord(inputField.text);
+            if (wordFound)
+            {
+                Word wordObjectFound = WordSearchManager.Instance.WordFound(inputField.text);
+                GameManager.Instance.WordHasBeenFound(wordObjectFound);
+                ClearField();
+            }
+            previousText = inputField.text;
+        }
     }
 
     public void OnFieldSelected()

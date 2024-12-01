@@ -2,6 +2,7 @@ using PatternLibrary;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : Singleton<UIManager>
 {
@@ -11,7 +12,9 @@ public class UIManager : Singleton<UIManager>
 
     public GameObject inputUI;
 
-    public TextMeshProUGUI countdownText;
+    public GameObject countDownHolder;
+    public Image three, two, one;
+
     public Color endCooldownColor;
 
     public void EnableUI()
@@ -27,6 +30,9 @@ public class UIManager : Singleton<UIManager>
         pauseButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
         unPauseButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
         settingsButton.transform.parent.GetComponent<Animator>().SetBool("isGameOver", true);
+
+        ScoreManager.Instance.scoreTracker.transform.parent.GetComponent<Animator>().SetTrigger("showScore");
+        ScoreManager.Instance.mistakesTracker.transform.parent.GetComponent<Animator>().SetTrigger("showScore");
 
         inputUI.GetComponent<Animator>().SetBool("isGameOver", true);   
     }
@@ -59,23 +65,35 @@ public class UIManager : Singleton<UIManager>
         GameManager.Instance.RestartGame();
     }
 
-    public void DisplayCountdown(string value)
+    public void DisplayCountdown(int valueToDisplay)
     {
-        countdownText.enabled = true;
-        if (value == "L")
+        countDownHolder.SetActive(true);
+
+        switch (valueToDisplay)
         {
-            countdownText.color = endCooldownColor;
+            case 3:
+                three.gameObject.SetActive(true);
+                two.gameObject.SetActive(false);
+                one.gameObject.SetActive(false);
+                break;
+            case 2:
+                three.gameObject.SetActive(false);
+                two.gameObject.SetActive(true);
+                one.gameObject.SetActive(false);
+                break;
+            case 1:
+                three.gameObject.SetActive(false);
+                two.gameObject.SetActive(false);
+                one.gameObject.SetActive(true);
+                break;
+            case 0:
+                break;
         }
-        else
-        {
-            countdownText.color = Color.white;
-        }
-        countdownText.text = value;
     }
 
     public void HideCountdown()
     {
-        countdownText.enabled = false;
+        countDownHolder.SetActive(false);
     }
 
     private void FixedUpdate()
@@ -89,6 +107,8 @@ public class UIManager : Singleton<UIManager>
             case GameManager.GameState.Playing:
                 pauseButton.SetActive(true);
                 unPauseButton.SetActive(false);
+                break;
+            case GameManager.GameState.GameOver:
                 break;
         }
     }

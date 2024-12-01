@@ -21,7 +21,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private float initialDelay = 1f;
 
     [Header("Game Speed")]
-    public float gameSpeed = 1f;
+    public float assignedGameSpeed = 1f;
+    private float gameSpeed = 1f;
     public float speedIncreaseStep = 1.0001f;
     public float maxSpeed = 3f;
     public int lossCountdownTime = 3;
@@ -29,6 +30,7 @@ public class GameManager : Singleton<GameManager>
     [Header("Game State")]
     public GameState gameState = GameState.PreStart;
     private GameState previousState = GameState.PreStart;
+    private float previousTimeScale;
     [SerializeField] private GameObject restartButton;
 
     [Header("Trie Settings")]
@@ -47,6 +49,8 @@ public class GameManager : Singleton<GameManager>
         base.Awake();
         levelDifficulty = WordManager.Instance.LoadWordList(WordManager.Instance.availableWordLists[WordManager.Instance.indexToLoad]);
         levelIndex = WordManager.Instance.indexToLoad;
+        gameSpeed = assignedGameSpeed;
+        previousTimeScale = Time.timeScale;
         SetResolution(585, 1266, true);
     }
 
@@ -122,7 +126,10 @@ public class GameManager : Singleton<GameManager>
     public void StartGame()
     {
         gameState = GameState.Playing;
-        MusicManager.Instance.PlayMusic(0, true);
+        if (!MusicManager.Instance.audioSource.isPlaying)
+        {
+            MusicManager.Instance.PlayMusic(0, true);
+        }
         UIManager.Instance.EnableUI();
         InputManager.Instance.inputField.enabled = true;
     }
@@ -130,6 +137,7 @@ public class GameManager : Singleton<GameManager>
     public void PauseGame()
     {
         previousState = gameState;
+        previousTimeScale = Time.timeScale;
         gameState = GameState.Paused;
         Time.timeScale = 0;
         InputManager.Instance.inputField.enabled = false;
@@ -147,7 +155,14 @@ public class GameManager : Singleton<GameManager>
         {
             gameState = GameState.Playing;
         }
-        Time.timeScale = gameSpeed;
+        if (previousTimeScale != 0)
+        {
+            Time.timeScale = previousTimeScale;
+        }
+        else
+        {
+            Time.timeScale = gameSpeed;
+        }
         InputManager.Instance.inputField.enabled = true;
         UIManager.Instance.unPauseButton.SetActive(false);
         UIManager.Instance.pauseButton.SetActive(true);

@@ -67,10 +67,10 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private TextMeshProUGUI highestComboTextHeader;
     [SerializeField] private Sprite gradeSSprite, gradeASprite, gradeBSprite, gradeCSprite, gradeDSprite, gradeFSprite;
     [SerializeField] private GameObject gradeSpriteImage;
-    [SerializeField] private GameObject scoreTracker;
     [SerializeField] private GameObject fallingText;
     [SerializeField] private GameObject pointSpawnPoint;
-    [SerializeField] private TextMeshProUGUI mistakesTracker;
+    public GameObject scoreTracker;
+    public TextMeshProUGUI mistakesTracker;
 
     protected override void Awake()
     {
@@ -369,26 +369,26 @@ public class ScoreManager : Singleton<ScoreManager>
         {
             case 'S':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeSSprite;
-                SFXManager.Instance.PlaySFX(5, false);
+                SFXManager.Instance.PlaySFX(5, false, true);
                 break;
             case 'A':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeASprite;
-                SFXManager.Instance.PlaySFX(4, false);
+                SFXManager.Instance.PlaySFX(4, false, true);
                 break;
             case 'B':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeBSprite;
-                SFXManager.Instance.PlaySFX(3, false);
+                SFXManager.Instance.PlaySFX(3, false, true);
                 break;
             case 'C':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeCSprite;
-                SFXManager.Instance.PlaySFX(2, false);
+                SFXManager.Instance.PlaySFX(2, false, true);
                 break;
             case 'D':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeDSprite;
                 break;
             case 'F':
                 gradeSpriteImage.GetComponent<Image>().sprite = gradeFSprite;
-                SFXManager.Instance.PlaySFX(6, false);
+                SFXManager.Instance.PlaySFX(6, false, true);
                 break;
         }
 
@@ -414,7 +414,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public void DisplayScore()
     {
-        mistakesText.text = $"{mistakesCounter} ({PercentMistakes().ToString("0.")}%)";
+        mistakesText.text = $"{mistakesCounter}";
 
         highestComboText.text = $"x{highestCombo}";
 
@@ -484,6 +484,7 @@ public class ScoreManager : Singleton<ScoreManager>
 
             iterationCounter++;
         }
+        SFXManager.Instance.PlaySFX(7, false);
 
         // Reset the text color and restore the full original dynamic text
         text.color = defaultTextColor;
@@ -504,6 +505,7 @@ public class ScoreManager : Singleton<ScoreManager>
         }
         else if (text == mistakesText)
         {
+            mistakesText.text += $" ({PercentMistakes().ToString("0.")}%)";
             StartCoroutine(ShowScoreAnimation(highestComboText, highestComboTextHeader, realTimeBetweenLetters));
         }
         else if (text == highestComboText)

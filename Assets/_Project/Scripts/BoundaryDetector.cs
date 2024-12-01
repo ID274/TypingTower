@@ -74,23 +74,34 @@ public class BoundaryDetector : MonoBehaviour
 
     private void UpdateCountdownTimer()
     {
-        int timeLeft = GameManager.Instance.lossCountdownTime;
-        countdownTimer += Time.deltaTime;
-        if (countdownTimer < timeLeft)
+        // Fetch the total countdown duration from GameManager
+        float countdownTime = GameManager.Instance.lossCountdownTime;
+
+        // Increment elapsed time using real-time delta (ignores time scale changes)
+        if (Time.deltaTime != 0)
         {
-            int timeRemaining = Mathf.CeilToInt(timeLeft - countdownTimer); // Use Mathf.CeilToInt for consistent seconds display
-            if (timeRemaining < timeLeft)
-            {
-                UIManager.Instance.DisplayCountdown(timeRemaining.ToString());
-            }
-            //Debug.Log("Time left: " + timeRemaining + " seconds");
+            countdownTimer += Time.unscaledDeltaTime;
         }
-        else
+
+        // Calculate remaining time
+        float timeRemaining = countdownTime - countdownTimer;
+
+        if (timeRemaining > 0 && colliding)
         {
-            Debug.Log($"You lose! {timeLeft}");
-            // display UI manager score panel
+            // Display the remaining time as whole seconds
+            UIManager.Instance.DisplayCountdown(Mathf.CeilToInt(timeRemaining));
+        }
+        else if (colliding)
+        {
+            Debug.Log("You lose!");
+            // Trigger game over logic and stop the countdown
             GameManager.Instance.GameOver();
             StopCountdown();
         }
+        else
+        {
+            StopCountdown();
+        }
     }
+
 }

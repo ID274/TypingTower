@@ -23,6 +23,12 @@ public class SettingsManager : Singleton<SettingsManager>
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Toggle toggleKeyboard;
 
+    [Header("PlayerPrefs")]
+    private string masterVolumeKey = "MasterVolume";
+    private string musicVolumeKey = "MusicVolume";
+    private string sfxVolumeKey = "SFXVolume";
+    private string keyboardToggleKey = "KeyboardToggle";
+
     protected override void Awake()
     {
         base.Awake();
@@ -30,30 +36,32 @@ public class SettingsManager : Singleton<SettingsManager>
 
     private void Start()
     {
-        sfxVolumeSlider.value = sfxVolume;
-        musicVolumeSlider.value = musicVolume;
-        masterVolumeSlider.value = masterVolume;
-        RefreshSliders();
+        CheckPlayerPrefs();
+        LoadSettings();
+        RefreshUI();
     }
 
     public void OpenSettings()
     {
         settingsPanel.SetActive(true);
-        RefreshSliders();
+        LoadSettings();
+        RefreshUI();
     }
     public void CloseSettings()
     {
+        SaveAllSettings();
         settingsPanel.SetActive(false);
     }
 
-    public void RefreshSliders()
+    public void RefreshUI()
     {
         sfxVolumeSlider.value = sfxVolume;
         musicVolumeSlider.value = musicVolume;
         masterVolumeSlider.value = masterVolume;
+        toggleKeyboard.isOn = PlayerPrefs.GetInt(keyboardToggleKey) == 1 ? true : false;
     }
 
-    public float ConvertValue(float value)
+    public float ConvertValueToDecibels(float value)
     {
         if (value <= 0)
         {
@@ -65,22 +73,22 @@ public class SettingsManager : Singleton<SettingsManager>
     public void SetSFXVolume()
     {
         sfxVolume = sfxVolumeSlider.value;
-        sfxMixerGroup.audioMixer.SetFloat("SFXVolume", ConvertValue(sfxVolume));
-        RefreshSliders();
+        sfxMixerGroup.audioMixer.SetFloat("SFXVolume", ConvertValueToDecibels(sfxVolume));
+        RefreshUI();
     }
 
     public void SetMusicVolume()
     {
         musicVolume = musicVolumeSlider.value;
-        musicMixerGroup.audioMixer.SetFloat("MusicVolume", ConvertValue(musicVolume));
-        RefreshSliders();
+        musicMixerGroup.audioMixer.SetFloat("MusicVolume", ConvertValueToDecibels(musicVolume));
+        RefreshUI();
     }
 
     public void SetMasterVolume()
     {
         masterVolume = masterVolumeSlider.value;
-        masterMixerGroup.audioMixer.SetFloat("MasterVolume", ConvertValue(masterVolume));
-        RefreshSliders();
+        masterMixerGroup.audioMixer.SetFloat("MasterVolume", ConvertValueToDecibels(masterVolume));
+        RefreshUI();
     }
 
     public void ToggleKeyboard()
@@ -98,11 +106,81 @@ public class SettingsManager : Singleton<SettingsManager>
         }
     }
 
-    public void SaveSettings()
+    public void SetDefaultSettings(string value)
     {
-        // save to player prefs
+        if (PlayerPrefs.HasKey(value).GetType() == typeof(float))
+        {
+            PlayerPrefs.SetFloat(value, 25);
+        }
+        else if (PlayerPrefs.HasKey(value).GetType() == typeof(int))
+        {
+            PlayerPrefs.SetInt(value, 1);
+        }
+        else // key is a string
+        {
+
+        }
+        PlayerPrefs.Save();
     }
 
+    public void SaveSettings(string value)
+    {
+        // save to player prefs
+        switch (value)
+        {
+            case "MasterVolume":
+                PlayerPrefs.SetFloat(masterVolumeKey, masterVolume);
+                break;
+            case "MusicVolume":
+                PlayerPrefs.SetFloat(musicVolumeKey, musicVolume);
+                break;
+            case "SFXVolume":
+                PlayerPrefs.SetFloat(sfxVolumeKey, sfxVolume);
+                break;
+            case "KeyboardToggle":
+                PlayerPrefs.SetInt(keyboardToggleKey, toggleKeyboard.isOn ? 1 : 0);
+                break;
+        }
+        PlayerPrefs.Save();
+    }
+    
+    public void SaveAllSettings()
+    {
+        SaveSettings(masterVolumeKey);
+        SaveSettings(musicVolumeKey);
+        SaveSettings(sfxVolumeKey);
+        SaveSettings(keyboardToggleKey);
+    }
+
+    public void LoadSettings()
+    {
+        // load from player prefs
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 25);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 25);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 25);
+        toggleKeyboard.isOn = PlayerPrefs.GetInt("KeyboardToggle", 1) == 1 ? true : false;
+        RefreshUI();
+    }
+
+    public void CheckPlayerPrefs()
+    {
+        if (!PlayerPrefs.HasKey(masterVolumeKey))
+        {
+            SetDefaultSettings(masterVolumeKey);
+        }
+        else if (!PlayerPrefs.HasKey(musicVolumeKey))
+        {
+            SetDefaultSettings(musicVolumeKey);
+        }
+        else if (!PlayerPrefs.HasKey(sfxVolumeKey))
+        {
+            SetDefaultSettings(sfxVolumeKey);
+        }
+        else if (!PlayerPrefs.HasKey(keyboardToggleKey))
+        {
+            SetDefaultSettings(keyboardToggleKey);
+        }
+    }
     public void ExitButton()
     {
         // exit game

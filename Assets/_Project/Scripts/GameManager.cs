@@ -51,7 +51,7 @@ public class GameManager : Singleton<GameManager>
         levelIndex = WordManager.Instance.indexToLoad;
         gameSpeed = assignedGameSpeed;
         previousTimeScale = Time.timeScale;
-        SetResolution(585, 1266, true);
+        //SetResolution(585, 1266, true);
     }
 
     private void Update()

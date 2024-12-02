@@ -42,7 +42,6 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private Color comboColor4;
     [SerializeField] private GameObject mistakeHurtPanel;
     [SerializeField] private AnimationClip hurtAnimation;
-    [SerializeField] private AnimationClip cameraShake;
     private int mistakesLastWord = 0;
     private int totalBonusPoints = 0;
 
@@ -66,7 +65,8 @@ public class ScoreManager : Singleton<ScoreManager>
     [SerializeField] private TextMeshProUGUI highestComboText;
     [SerializeField] private TextMeshProUGUI highestComboTextHeader;
     [SerializeField] private Sprite gradeSSprite, gradeASprite, gradeBSprite, gradeCSprite, gradeDSprite, gradeFSprite;
-    [SerializeField] private GameObject gradeSpriteImage;
+    [SerializeField] private GameObject gradeHolder;
+    [SerializeField] private Image gradeImage;
     [SerializeField] private GameObject fallingText;
     [SerializeField] private GameObject pointSpawnPoint;
     public GameObject scoreTracker;
@@ -75,7 +75,7 @@ public class ScoreManager : Singleton<ScoreManager>
     protected override void Awake()
     {
         base.Awake();
-        gradeSpriteImage.SetActive(false);
+        gradeHolder.SetActive(false);
         scorePanel.SetActive(false);
 
         //ensure text is disabled so we can reenable it later
@@ -368,26 +368,26 @@ public class ScoreManager : Singleton<ScoreManager>
         switch (gradeAwarded)
         {
             case 'S':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeSSprite;
+                gradeImage.sprite = gradeSSprite;
                 SFXManager.Instance.PlaySFX(5, false, true);
                 break;
             case 'A':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeASprite;
+                gradeImage.sprite = gradeASprite;
                 SFXManager.Instance.PlaySFX(4, false, true);
                 break;
             case 'B':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeBSprite;
+                gradeImage.sprite = gradeBSprite;
                 SFXManager.Instance.PlaySFX(3, false, true);
                 break;
             case 'C':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeCSprite;
+                gradeImage.sprite = gradeCSprite;
                 SFXManager.Instance.PlaySFX(2, false, true);
                 break;
             case 'D':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeDSprite;
+                gradeImage.sprite = gradeDSprite;
                 break;
             case 'F':
-                gradeSpriteImage.GetComponent<Image>().sprite = gradeFSprite;
+                gradeImage.sprite = gradeFSprite;
                 SFXManager.Instance.PlaySFX(6, false, true);
                 break;
         }
@@ -403,11 +403,11 @@ public class ScoreManager : Singleton<ScoreManager>
         {
             case true:
                 // animation here
-                gradeSpriteImage.SetActive(true);
+                gradeHolder.SetActive(true);
                 break;
 
             case false:
-                gradeSpriteImage.SetActive(true);
+                gradeHolder.SetActive(true);
                 break;
         }
     }

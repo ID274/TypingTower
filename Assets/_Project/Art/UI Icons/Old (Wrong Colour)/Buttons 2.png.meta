@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5937358284e5e3246bc57dcb79a68c05
+guid: bbdf3d9b9cf265642a3c798b02397a9f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -132,6 +132,45 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: VisionOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: tvOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -150,8 +189,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ca3425e2d5afb674ebc77f1ea6443a30
-      internalID: 1363636189
+      spriteID: b5638c6b082b5824cbde8b8c86db316a
+      internalID: 694057867
       vertices: []
       indices: 
       edges: []
@@ -171,8 +210,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d87b2eeeb23d74f4ea5fc8508dee7f15
-      internalID: -835570564
+      spriteID: a4264c18178961c458f2676df50b9d45
+      internalID: -807548491
       vertices: []
       indices: 
       edges: []
@@ -188,8 +227,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Buttons 2_0: 1363636189
-      Buttons 2_1: -835570564
+      Buttons 2_0: 694057867
+      Buttons 2_1: -807548491
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

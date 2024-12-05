@@ -11,12 +11,17 @@ public class MySceneManager : Singleton<MySceneManager>
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void LoadSceneSingle(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
+
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
 
-    public void LoadSceneAsynchronously(string sceneName)
+    public void LoadSceneAsync(string sceneName)
     {
         //StartCoroutine(LoadSceneAsync(sceneName));
     }

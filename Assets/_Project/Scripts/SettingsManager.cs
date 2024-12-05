@@ -187,6 +187,6 @@ public class SettingsManager : Singleton<SettingsManager>
         MusicManager.Instance.Stop();
         SaveAllSettings();
         Time.timeScale = 1;
-        MySceneManager.Instance.LoadScene("Main Menu");
+        MySceneManager.Instance.LoadSceneSingle("Main Menu Classic");
     }
 }

@@ -35,7 +35,6 @@ public class InputManager : Singleton<InputManager>
             KeyboardManager.Instance.OnBackspacePressed();
         }
     }
-
     public void OnValueChanged()
     {
         if (inputField.text == " ")
@@ -66,7 +65,11 @@ public class InputManager : Singleton<InputManager>
     public void OnFieldDeselected()
     {
         Debug.Log("Field deselected.");
-        inputField.DeactivateInputField();
+    }
+
+    public void OnEndEdit()
+    {
+        inputField.ActivateInputField();
     }
 
     public void ClearField()
@@ -85,7 +88,6 @@ public class InputManager : Singleton<InputManager>
 
     public void EnableInput()
     {
-        KeyboardManager.Instance.EnableKeyboard();
         inputField.ActivateInputField();
         inputField.gameObject.SetActive(true);
     }

@@ -259,8 +259,12 @@ public class ScoreManager : Singleton<ScoreManager>
 
     public float PercentMistakes()
     {
-        float percentage = ((float)mistakesCounter / wordsTotalCounter) * 100;
-        percentage = Mathf.Clamp(percentage, 0, 100);
+        float percentage = 0;
+        if (wordsTotalCounter > 0)
+        {
+            percentage = ((float)mistakesCounter / wordsTotalCounter) * 100;
+            percentage = Mathf.Clamp(percentage, 0, 100);
+        }
         return percentage;
     }
 
@@ -445,7 +449,7 @@ public class ScoreManager : Singleton<ScoreManager>
         // Ensure the dynamic text has valid content
         if (string.IsNullOrEmpty(originalText))
         {
-            originalText = "?"; // Default to "?" if empty
+            originalText = "0"; // Default to "?" if empty
         }
 
         // Split the original dynamic text into characters for animation

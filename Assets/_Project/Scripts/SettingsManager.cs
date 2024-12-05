@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PatternLibrary;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsManager : Singleton<SettingsManager>
@@ -183,6 +184,9 @@ public class SettingsManager : Singleton<SettingsManager>
     }
     public void ExitButton()
     {
-        // exit game
+        MusicManager.Instance.Stop();
+        SaveAllSettings();
+        Time.timeScale = 1;
+        MySceneManager.Instance.LoadScene("Main Menu");
     }
 }

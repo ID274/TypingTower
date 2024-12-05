@@ -251,7 +251,7 @@ public class ScoreManager : Singleton<ScoreManager>
             float percentage = PercentMistakes();
             mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()} ({percentage.ToString("0.")}%)";
         }
-        else if (mistakesCounter >= wordsTotalCounter)
+        else
         {
             mistakesTracker.text = $"Mistakes: {mistakesCounter.ToString()} (100%)";
         }
@@ -302,60 +302,23 @@ public class ScoreManager : Singleton<ScoreManager>
                 break;
         }
 
-        if (totalScore >= gradeS.Item2)
+        float mistakePercentage = (float)mistakesCounter / wordsTotalCounter * 100;
+
+        if (totalScore >= gradeA.Item2)
         {
-            if (mistakesCounter == gradeS.Item3)
-            {
-                gradeAwarded = gradeS.Item1;
-            }
-            else
-            {
-                gradeAwarded = gradeA.Item1;
-            }
-        }
-        else if (totalScore >= gradeA.Item2)
-        {
-            if (mistakesCounter <= (wordsTotalCounter * gradeA.Item3) / 100)
-            {
-                gradeAwarded = gradeA.Item1;
-            }
-            else
-            {
-                gradeAwarded = gradeB.Item1;
-            }
+            gradeAwarded = mistakePercentage <= gradeA.Item3 ? gradeA.Item1 : gradeB.Item1;
         }
         else if (totalScore >= gradeB.Item2)
         {
-            if (mistakesCounter <= (wordsTotalCounter * gradeB.Item3) / 100)
-            {
-                gradeAwarded = gradeB.Item1;
-            }
-            else
-            {
-                gradeAwarded = gradeC.Item1;
-            }
+            gradeAwarded = mistakePercentage <= gradeB.Item3 ? gradeB.Item1 : gradeC.Item1;
         }
         else if (totalScore >= gradeC.Item2)
         {
-            if (mistakesCounter <= (wordsTotalCounter * gradeC.Item3) / 100)
-            {
-                gradeAwarded = gradeC.Item1;
-            }
-            else
-            {
-                gradeAwarded = gradeD.Item1;
-            }
+            gradeAwarded = mistakePercentage <= gradeC.Item3 ? gradeC.Item1 : gradeD.Item1;
         }
         else if (totalScore >= gradeD.Item2)
         {
-            if (mistakesCounter <= (wordsTotalCounter * gradeD.Item3) / 100)
-            {
-                gradeAwarded = gradeD.Item1;
-            }
-            else
-            {
-                gradeAwarded = gradeF;
-            }
+            gradeAwarded = mistakePercentage <= gradeD.Item3 ? gradeD.Item1 : gradeF;
         }
         else
         {

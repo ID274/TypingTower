@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SceneFinder : MonoBehaviour
+public class SceneController : MonoBehaviour
 {
     private MySceneManager mySceneManager;
     private void Start()

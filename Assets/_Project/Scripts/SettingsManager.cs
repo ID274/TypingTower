@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using PatternLibrary;
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SettingsManager : Singleton<SettingsManager>
@@ -187,6 +184,6 @@ public class SettingsManager : Singleton<SettingsManager>
         MusicManager.Instance.Stop();
         SaveAllSettings();
         Time.timeScale = 1;
-        MySceneManager.Instance.LoadSceneSingle("Main Menu Classic");
+        MySceneManager.Instance.LoadSceneSingle(MySceneManager.Instance.mainMenuName);
     }
 }

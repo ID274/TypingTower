@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class MySceneManager : Singleton<MySceneManager>
 {
+    public string mainMenuName;
+    public float delay = 1f;
     public void ReloadCurrentScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -24,5 +26,21 @@ public class MySceneManager : Singleton<MySceneManager>
     public void LoadSceneAsync(string sceneName)
     {
         //StartCoroutine(LoadSceneAsync(sceneName));
+    }
+
+    public void LoadSceneDelayed(string sceneName)
+    {
+        StartCoroutine(LoadSceneDelay(sceneName));
+    }
+
+    public IEnumerator LoadSceneDelay(string sceneName)
+    {
+        ListenForSceneChange sceneTransition = FindObjectOfType<ListenForSceneChange>();
+        if (sceneTransition != null)
+        {
+            sceneTransition.Transition();
+        }
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(sceneName);
     }
 }

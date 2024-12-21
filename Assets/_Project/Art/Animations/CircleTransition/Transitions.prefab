@@ -437,7 +437,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a993357717af94a853ed6f5b7aa169, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeOut: {fileID: 0}
-  fadeOutEvent:
-    m_PersistentCalls:
-      m_Calls: []
+  fadeOut: {fileID: 7016976959829834345}
+  fadeIn: {fileID: 2244640551921353864}

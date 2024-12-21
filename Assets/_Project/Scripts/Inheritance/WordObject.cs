@@ -29,6 +29,20 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         }
     }
 
+    private void FixedUpdate()
+    {
+        var currentVelocity = rb.velocity;
+
+        if (currentVelocity.y <= 0f)
+        {
+            return;
+        }
+
+        currentVelocity.y = 0f;
+
+        rb.velocity = currentVelocity;
+    }
+
     public void SetWord()
     {
         wordText.text = WordManager.Instance.PickRandomWordWeighted().word;
@@ -39,14 +53,6 @@ public class WordObject : MonoBehaviour, IWord, ITextHolder
         MeshRenderer meshRend = GetComponent<MeshRenderer>();
         Material mat = meshRend.material;
         mat.color = color;
-    }
-
-    private void FixedUpdate()
-    {
-        if (rb.velocity.y > 0)
-        {
-            rb.velocity = new Vector3 (rb.velocity.x, 0.1f, rb.velocity.z);
-        }
     }
 
     public void SpawnExplosion()

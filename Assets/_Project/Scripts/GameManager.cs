@@ -22,7 +22,7 @@ public class GameManager : Singleton<GameManager>
     [Header("Game Speed")]
     public float assignedGameSpeed = 1f;
     private float gameSpeed = 1f;
-    public float speedIncreaseStep = 1.0001f;
+    public float speedIncreaseStep = 1.00003471f;
     public float maxSpeed = 3f;
     public int lossCountdownTime = 3;
 
@@ -46,6 +46,12 @@ public class GameManager : Singleton<GameManager>
     protected override void Awake()
     {
         base.Awake();
+
+        if (speedIncreaseStep == 0)
+        {
+            speedIncreaseStep = 1.00003471f;
+        }
+
         levelDifficulty = WordManager.Instance.LoadWordList(WordManager.Instance.availableWordLists[WordManager.Instance.indexToLoad]);
         levelIndex = WordManager.Instance.indexToLoad;
         gameSpeed = assignedGameSpeed;
@@ -102,7 +108,7 @@ public class GameManager : Singleton<GameManager>
     private float IncrementGameSpeed()
     {
         gameSpeed *= speedIncreaseStep;
-        Mathf.Clamp(gameSpeed, 0, maxSpeed);
+        gameSpeed = Mathf.Clamp(gameSpeed, 0, maxSpeed);
         return gameSpeed;
     }
 

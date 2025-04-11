@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// This singleton solution was provided to me by a colleague on the course. I do not claim this work as my own. However, I do understand how it works and the potential problems
+// associated with it, like no prevention of Lazy Initialisation when quitting the application.
+
 namespace PatternLibrary
 {   // As this is a base class we wont know the type of child classes until they are implimented so we substitute with T
     public class Singleton<T> : MonoBehaviour where T : Component
